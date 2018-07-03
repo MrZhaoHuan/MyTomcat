@@ -1,5 +1,12 @@
 package com.zhao.core;
 
+import com.zhao.core.http.DefaultDispatcherHandler;
+import com.zhao.core.http.ServletRequest;
+import com.zhao.core.http.ServletResponse;
+import com.zhao.core.http.impl.HttpServletRequest;
+import com.zhao.core.http.impl.HttpServletResponse;
+import com.zhao.core.log.ConsoleLog;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -10,13 +17,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.zhao.core.http.DefaultDispatcherHandler;
-import com.zhao.core.http.ServletRequest;
-import com.zhao.core.http.ServletResponse;
-import com.zhao.core.http.impl.HttpServletRequest;
-import com.zhao.core.http.impl.HttpServletResponse;
-import com.zhao.core.log.ConsoleLog;
-
 public class ServerHandler implements Runnable{
 	   private ServletRequest request;
 	   private ServletResponse response;
@@ -24,7 +24,7 @@ public class ServerHandler implements Runnable{
 	   private Socket socket;  //socket套接字
 	   private ServletContext context;
 	   
-	   public ServerHandler(Socket socket,ServletContext context) {
+	   public ServerHandler(Socket socket, com.zhao.core.ServletContext context) {
 		   log = ConsoleLog.getLog(getClass());
 		   this.socket = socket;
 		   this.context = context;
@@ -91,7 +91,7 @@ public class ServerHandler implements Runnable{
 			Class dispatcherHandler = Class.forName("com.zhao.core.http.DefaultDispatcherHandler");
 			Constructor dispatcherC  = dispatcherHandler.getDeclaredConstructor();
 			dispatcherC.setAccessible(true);
-			Method dispatcherProcess = dispatcherHandler.getDeclaredMethod("process",ServletRequest.class,ServletResponse.class,ServletContext.class);
+			Method dispatcherProcess = dispatcherHandler.getDeclaredMethod("process",ServletRequest.class,ServletResponse.class, com.zhao.core.ServletContext.class);
 			dispatcherProcess.invoke(((DefaultDispatcherHandler)dispatcherC.newInstance()),this.request,this.response,this.context);
 		} catch (Exception e) {
 			e.printStackTrace();
